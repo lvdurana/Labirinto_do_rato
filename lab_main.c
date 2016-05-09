@@ -1,13 +1,11 @@
-#include <windows.h>
-#include <tchar.h>
-#include <stdio.h>
+#include "f_base.h"
 
-#define WINDOW_WIDTH 300
-#define WINDOW_HEIGHT 300
+
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-TCHAR szClassName[] = _T("GMatrizes");
+TCHAR szClassName[] = _T("LabRato");
 HWND main_window;
+labirinto lab;
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
                      HINSTANCE hPrevInstance,
@@ -38,7 +36,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            0,                   /* Extended possibilites for variation */
            szClassName,         /* Classname */
            _T("Labirinto do Rato"),       /* Title Text */
-           WS_OVERLAPPEDWINDOW, /* default window */
+           WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, /* default window */
            CW_USEDEFAULT,       /* Windows decides the position */
            CW_USEDEFAULT,       /* where the window ends up on the screen */
            WINDOW_WIDTH,                 /* The programs width */
@@ -77,7 +75,12 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
         case WM_PAINT:
         {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(hwnd, &ps);
 
+            //deslab
+
+            EndPaint(hwnd, &ps);
         }
         break;
         case WM_COMMAND:

@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1462815681 source:c:\users\levi\documents\projects\c\labirinto_do_rato\lab_main.c
+	<windows.h>
+	<tchar.h>
+	<stdio.h>
+
