@@ -4,3 +4,29 @@
 	<tchar.h>
 	<stdio.h>
 
+1462853447 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\lab_main.c
+	"f_base.h"
+
+1462853992 c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\f_base.h
+	<tchar.h>
+	<windows.h>
+	<stdio.h>
+	<math.h>
+	<time.h>
+	"resource.h"
+
+1462830274 c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\resource.h
+
+1462850097 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\f_base.c
+	"f_base.h"
+
+1462853805 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\interface_rato.c
+	"f_base.h"
+
+1462833092 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\resource.rc
+	<windows.h>
+	<commctrl.h>
+	<richedit.h>
+	"resource.h"
+	"f_base.h"
+

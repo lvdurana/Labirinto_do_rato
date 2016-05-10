@@ -6,6 +6,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 TCHAR szClassName[] = _T("LabRato");
 HWND main_window;
 labirinto lab;
+frame_count FPS_count;
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
                      HINSTANCE hPrevInstance,
@@ -50,13 +51,12 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     ShowWindow (hwnd, nCmdShow);
     main_window = hwnd;
 
+    //Loop principal
     while (GetMessage (&messages, NULL, 0, 0))
     {
         TranslateMessage(&messages);
         DispatchMessage(&messages);
     }
-
-    return messages.wParam;
 
 };
 
@@ -69,7 +69,9 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     {
         case WM_CREATE:
             {
+                gerar(&lab);
                 UpdateWindow(hwnd);
+                atualizar_frame(hwnd,&FPS_count);
             };
             break;
 
@@ -79,6 +81,8 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             HDC hdc = BeginPaint(hwnd, &ps);
 
             //deslab
+            desenhar_labirinto(hwnd,hdc,&lab,0,0);
+
 
             EndPaint(hwnd, &ps);
         }
@@ -91,7 +95,16 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             break;
         case WM_LBUTTONDOWN:
             {
+                system("cls");
+            }
+        break;
 
+        case WM_TIMER:
+            switch(wParam){
+                case FPS_TIMER:
+                    atualizar_frame(hwnd, &FPS_count);
+                break;
+            break;
             }
         break;
         case WM_DESTROY:

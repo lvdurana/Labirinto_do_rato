@@ -1,5 +1,19 @@
 #include "f_base.h"
 
+int inicializar_contador_de_frames(frame_count *frame){
+
+
+}
+
+int atualizar_frame(HWND hwnd, frame_count *frame){
+    time_t mytime;
+    mytime = time(NULL);
+    printf(ctime(&mytime));
+    SetTimer(hwnd,FPS_TIMER ,200 ,(TIMERPROC)NULL);
+
+
+}
+
 void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, int pos_x, int pos_y){
 
     HWND mat_base = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_TILES));
@@ -14,10 +28,8 @@ void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, int pos_x, int pos_y
     for(i=0;i<MAX_SIZE_LAB_Y;i++){
         for(j=0;j<MAX_SIZE_LAB_X;j++){
             BitBlt(hdc, pos_x+j*SIZE_CELL_X, pos_y+i*SIZE_CELL_Y, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, TILE_BITMAP_POSITION_X(lab->mat[i][j]), 0, SRCCOPY);
-            }
-        }
-    }
-    BitBlt(hdc, pos_x, pos_y, M_FIELD_WIDTH, M_FIELD_HEIGHT, hdcMem, 0, 0, SRCCOPY);
+            };
+        };
 
     SelectObject(hdcMem, hbmOld);
     DeleteDC(hdcMem);
@@ -27,7 +39,7 @@ void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, int pos_x, int pos_y
 
 };
 
-int inicializar labirinto(labirinto *lab){
+int inicializar_labirinto(labirinto *lab){
     int i,j;
 
     //Desenhar labirinto

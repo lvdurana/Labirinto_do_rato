@@ -31,6 +31,9 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="f_base.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="f_base.h" />
 		<Unit filename="interface_rato.c">
 			<Option compilerVar="CC" />
