@@ -132,56 +132,78 @@ int atualizar_pilha(labirinto *lab, character *rato)
     int rato_y = GET_Y_FROM_STACK(dado);
     int dir;
 
-    if (lab->mat[rato_x+1][rato_y] == MAP_FLOOR)
+    if (lab->mat[rato_y+1][rato_x] == MAP_FLOOR)
     {
-        push( &(rato->pilha) , dado+100);
-
-        dir = DIRECTION_RIGHT;
+        push( &(rato->pilha) , dado+1);
+        dir = DIRECTION_DOWN;
     }
     else
     {
-        if (lab->mat[rato_x][rato_y+1] == MAP_FLOOR)
+        if (lab->mat[rato_y][rato_x+1] == MAP_FLOOR)
         {
-            push(&(rato->pilha),dado+1);
-            dir = DIRECTION_DOWN;
+            push(&(rato->pilha),dado+100);
+            dir = DIRECTION_RIGHT;
         }
         else
         {
-            if (lab->mat[rato_x-1][rato_y] == MAP_FLOOR)
+            if (lab->mat[rato_y-1][rato_x] == MAP_FLOOR)
             {
-                push(&(rato->pilha),dado-100);
-                dir = DIRECTION_LEFT;
+                push(&(rato->pilha),dado-1);
+                dir = DIRECTION_UP;
             }
             else
             {
-                if (lab->mat[rato_x][rato_y-1] == MAP_FLOOR)
+                if (lab->mat[rato_y][rato_x-1] == MAP_FLOOR)
                     {
-                        push(&(rato->pilha),dado-1);
-                        dir = DIRECTION_UP;
+                        push(&(rato->pilha),dado-100);
+                        dir = DIRECTION_LEFT;
                     }
                     else
                     {
                         pop(&(rato->pilha));
-                        printf("%d %d\n",GET_X_FROM_STACK(rato->pilha->dado),GET_Y_FROM_STACK(rato->pilha->dado));
-                        int diff_pos = rato->pilha->dado - dado;
 
-                        if(diff_pos >= 100)
-                            dir = DIRECTION_DOWN;
-                        else
-                        if(diff_pos >= 1)
+                        int diff_pos = rato->pilha->dado - dado;
+                        printf("%d\n",diff_pos);
+
+                        if(diff_pos == 100)
                             dir = DIRECTION_RIGHT;
                         else
-                        if(diff_pos > -100)
-                            dir = DIRECTION_LEFT;
+                        if(diff_pos == 1)
+                            dir = DIRECTION_DOWN;
                         else
+                        if(diff_pos == -1)
                             dir = DIRECTION_UP;
+                        else
+                            dir = DIRECTION_LEFT;
                     }
             }
         }
     }
-    lab->mat[rato_x][rato_y] = MAP_VISITED;
+
+    if(verificar_beco(lab,rato_x,rato_y))
+        lab->mat[rato_y][rato_x] = MAP_DEADEND;
+    else
+        lab->mat[rato_y][rato_x] = MAP_VISITED;
     //printf("%d %d\n",GET_X_FROM_STACK(rato->pilha->dado),GET_Y_FROM_STACK(rato->pilha->dado));
+    printf("%d\n",dir);
     return dir;
+}
+
+int verificar_beco(labirinto *lab, int pos_x, int pos_y){
+    int wall_counter = 0;
+    if(lab->mat[pos_y][pos_x+1] == MAP_WALL)
+        wall_counter++;
+    if(lab->mat[pos_y][pos_x-1] == MAP_WALL)
+        wall_counter++;
+    if(lab->mat[pos_y+1][pos_x] == MAP_WALL)
+        wall_counter++;
+    if(lab->mat[pos_y-1][pos_x] == MAP_WALL)
+        wall_counter++;
+
+    if(wall_counter >= 3)
+        return 1;
+    return 0;
+
 }
 
 

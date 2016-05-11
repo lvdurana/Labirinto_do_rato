@@ -86,6 +86,7 @@ int verificar_movimentacao(character *rato){
 int atualizar_IA_rato(labirinto *lab, character *rato){
     int dir = atualizar_pilha(lab,rato);
     rato->direction = dir;
+    //printf("%d\n",rato->direction);
     switch(dir){
         case DIRECTION_UP:
         case DIRECTION_DOWN:
@@ -124,7 +125,7 @@ void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, int
             BitBlt(hdc, pos_x+j*SIZE_CELL_X, pos_y+i*SIZE_CELL_Y, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, TILE_BITMAP_POSITION_X(lab->mat[i][j]), 0, SRCCOPY);
             };
         };
-    BitBlt(hdc, pos_x+rato->pos.y, pos_y+rato->pos.x, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, 48, 0, SRCCOPY);
+    BitBlt(hdc, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, 48, 0, SRCCOPY);
 
 
     SelectObject(hdcMem, hbmOld);

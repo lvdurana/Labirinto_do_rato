@@ -78,6 +78,8 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 inicializar_rato(&rato);
                 rato.active = TRUE;
                 rato.speed = SPEED_HIGH;
+                lab.mat[2][2]=1;
+                lab.mat[3][1]=1;
                 inicializar_contador_de_frames(hwnd, &FPS_count);
             };
             break;
