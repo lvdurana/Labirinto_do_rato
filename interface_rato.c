@@ -69,8 +69,9 @@ int atualizar_movimento_rato(character *rato){
 
     //Atualizar frame
     rato->frame_duration--;
-    if(!rato->frame_duration){
-        rato->frame |= 1;
+    if(!(rato->frame_duration)){
+        rato->frame ^= 1;
+        printf("//////%d\n",rato->frame);
         rato->frame_duration = FRAME_DURATION(rato->speed);
     }
 
@@ -113,19 +114,22 @@ int update(labirinto *lab, character *rato){
 
 void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, int pos_x, int pos_y){
 
-    HWND mat_base = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_TILES));
+    HWND map_tiles = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_TILES));
+    HWND sprite = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
+
 
     HDC hdcMem = CreateCompatibleDC(hdc);
-    HBITMAP hbmOld = SelectObject(hdcMem, mat_base);
+    HBITMAP hbmOld = SelectObject(hdcMem, map_tiles);
     int i,j;
 
     //Desenhar labirinto
     for(i=0;i<MAX_SIZE_LAB_Y;i++){
         for(j=0;j<MAX_SIZE_LAB_X;j++){
             BitBlt(hdc, pos_x+j*SIZE_CELL_X, pos_y+i*SIZE_CELL_Y, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, TILE_BITMAP_POSITION_X(lab->mat[i][j]), 0, SRCCOPY);
-            };
         };
-    BitBlt(hdc, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, 48, 0, SRCCOPY);
+    };
+    SelectObject(hdcMem, sprite);
+    BitBlt(hdc, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, (rato->frame * 16), (rato->direction*16), SRCCOPY);
 
 
     SelectObject(hdcMem, hbmOld);
@@ -138,6 +142,10 @@ void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, int
 };
 
 int desenhar_rato(HWND hwnd, HDC hdc,character *rato,int pos_x, int pos_y){
+
+    RECT rc;
+
+    GetClientRect(hwnd,&rc);
 
     HWND mat_base = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
     if(mat_base == NULL)

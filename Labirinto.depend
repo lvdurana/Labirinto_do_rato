@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1462992622 source:c:\users\levi\documents\projects\c\labirinto_do_rato\lab_main.c
+1462996472 source:c:\users\levi\documents\projects\c\labirinto_do_rato\lab_main.c
 	"f_base.h"
 
 1462983159 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\lab_main.c
@@ -28,7 +28,7 @@
 	"resource.h"
 	"f_base.h"
 
-1462994563 source:c:\users\levi\documents\projects\c\labirinto_do_rato\interface_rato.c
+1462996682 source:c:\users\levi\documents\projects\c\labirinto_do_rato\interface_rato.c
 	"f_base.h"
 
 1462994773 c:\users\levi\documents\projects\c\labirinto_do_rato\f_base.h
@@ -48,6 +48,6 @@
 	"resource.h"
 	"f_base.h"
 
-1462994584 source:c:\users\levi\documents\projects\c\labirinto_do_rato\f_base.c
+1462995645 source:c:\users\levi\documents\projects\c\labirinto_do_rato\f_base.c
 	"f_base.h"
 

@@ -185,7 +185,6 @@ int atualizar_pilha(labirinto *lab, character *rato)
     else
         lab->mat[rato_y][rato_x] = MAP_VISITED;
     //printf("%d %d\n",GET_X_FROM_STACK(rato->pilha->dado),GET_Y_FROM_STACK(rato->pilha->dado));
-    printf("%d\n",dir);
     return dir;
 }
 
