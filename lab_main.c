@@ -1,12 +1,16 @@
 #include "f_base.h"
 
+TCHAR szClassName[] = _T("LabRato");
+HWND main_window;
+
+//Elementos do labirinto
+labirinto lab;
+character rato;
+frame_count FPS_count;
 
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-TCHAR szClassName[] = _T("LabRato");
-HWND main_window;
-labirinto lab;
-frame_count FPS_count;
+
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
                      HINSTANCE hPrevInstance,
@@ -71,7 +75,10 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             {
                 gerar(&lab);
                 UpdateWindow(hwnd);
-                atualizar_frame(hwnd,&FPS_count);
+                inicializar_rato(&rato);
+                rato.active = TRUE;
+                rato.speed = SPEED_HIGH;
+                inicializar_contador_de_frames(hwnd, &FPS_count);
             };
             break;
 
@@ -81,7 +88,8 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             HDC hdc = BeginPaint(hwnd, &ps);
 
             //deslab
-            desenhar_labirinto(hwnd,hdc,&lab,0,0);
+            desenhar_labirinto(hwnd,hdc,&lab,&rato,0,0);
+            //desenhar_rato(hwnd,hdc,&rato,0,0);
 
 
             EndPaint(hwnd, &ps);
@@ -102,11 +110,17 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         case WM_TIMER:
             switch(wParam){
                 case FPS_TIMER:
+                    update(&lab,&rato);
+                    InvalidateRect(hwnd,NULL,1);
+                    UpdateWindow(hwnd);
                     atualizar_frame(hwnd, &FPS_count);
                 break;
             break;
             }
         break;
+        case WM_ERASEBKGND:
+            return (LRESULT)1;
+
         case WM_DESTROY:
             PostQuitMessage (0);
             break;

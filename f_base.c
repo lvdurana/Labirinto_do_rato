@@ -13,11 +13,7 @@
 
 int mat[TAM_X][TAM_Y];
 
-typedef struct STACK
-{
-    int dado;
-    struct STACK *prox;
-} stack;
+
 
 rato_x = 2;
 rato_y = 2;
@@ -29,28 +25,39 @@ void inicia(){
     pilha = NULL;
 }
 
-void push(int x,int y){
+/*int verificar_posicao_do_rato(character *rato){
+    pilha *aux = rato->pilha;
+    if(aux == NULL)
+        return -1;
+    while(aux != NULL)
+        aux = aux->prox;
+    return aux->dado;
+
+}*/
+
+void push(stack **pilha, int dado){
+
     stack *tmp;
-    tmp = novo();
-    tmp->dado = x*100+y;
-    tmp->prox = pilha;
-    pilha = tmp;
+    tmp = criar_dado_pilha();
+    tmp->dado = dado;
+    tmp->prox = *pilha;
+
+    *pilha = tmp;
 }
 
-void pop(){
-    int dado;
-    if (pilha != NULL)
+int pop(stack **pilha){
+    stack *aux = *pilha;
+    if (*pilha != NULL)
     {
-        dado = pilha->dado;
-        pilha = pilha->prox;
-        rato_x = dado / 100;
-        rato_y = dado % 100;
+        *pilha = (*pilha)->prox;
+        free(aux);
+        return 1;
     }
-
+    return 0;
 }
 
-int novo(){
-    return malloc(sizeof(stack));
+int criar_dado_pilha(){
+    return (stack*)malloc(sizeof(stack));
 }
 
 int saiu()
@@ -118,41 +125,63 @@ void atualizar(){
     mat[rato_x][rato_y] = 5;
 }
 
-void mover()
+int atualizar_pilha(labirinto *lab, character *rato)
 {
-    if (mat[rato_x+1][rato_y] == 0)
+    int dado = rato->pilha->dado;
+    int rato_x = GET_X_FROM_STACK(dado);
+    int rato_y = GET_Y_FROM_STACK(dado);
+    int dir;
+
+    if (lab->mat[rato_x+1][rato_y] == MAP_FLOOR)
     {
-        push(rato_x,rato_y);
-        rato_x++;
+        push( &(rato->pilha) , dado+100);
+
+        dir = DIRECTION_RIGHT;
     }
     else
     {
-        if (mat[rato_x][rato_y+1] == 0)
+        if (lab->mat[rato_x][rato_y+1] == MAP_FLOOR)
         {
-            push(rato_x,rato_y);
-            rato_y++;
+            push(&(rato->pilha),dado+1);
+            dir = DIRECTION_DOWN;
         }
         else
         {
-            if (mat[rato_x-1][rato_y] == 0)
+            if (lab->mat[rato_x-1][rato_y] == MAP_FLOOR)
             {
-                push(rato_x,rato_y);
-                rato_x--;
+                push(&(rato->pilha),dado-100);
+                dir = DIRECTION_LEFT;
             }
             else
             {
-                if (mat[rato_x][rato_y-1] == 0)
+                if (lab->mat[rato_x][rato_y-1] == MAP_FLOOR)
                     {
-                        push(rato_x,rato_y);
-                        rato_y--;
+                        push(&(rato->pilha),dado-1);
+                        dir = DIRECTION_UP;
                     }
                     else
                     {
-                        pop();
+                        pop(&(rato->pilha));
+                        printf("%d %d\n",GET_X_FROM_STACK(rato->pilha->dado),GET_Y_FROM_STACK(rato->pilha->dado));
+                        int diff_pos = rato->pilha->dado - dado;
+
+                        if(diff_pos >= 100)
+                            dir = DIRECTION_DOWN;
+                        else
+                        if(diff_pos >= 1)
+                            dir = DIRECTION_RIGHT;
+                        else
+                        if(diff_pos > -100)
+                            dir = DIRECTION_LEFT;
+                        else
+                            dir = DIRECTION_UP;
                     }
             }
         }
     }
+    lab->mat[rato_x][rato_y] = MAP_VISITED;
+    //printf("%d %d\n",GET_X_FROM_STACK(rato->pilha->dado),GET_Y_FROM_STACK(rato->pilha->dado));
+    return dir;
 }
 
 
