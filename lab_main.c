@@ -8,6 +8,10 @@ labirinto lab;
 character rato;
 frame_count FPS_count;
 
+//Elementos da interface
+HBITMAP map_tiles, sprite, sprite_mask;
+
+
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -73,13 +77,20 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     {
         case WM_CREATE:
             {
-                gerar(&lab);
-                UpdateWindow(hwnd);
+                map_tiles= LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_TILES));
+                sprite = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
+                sprite_mask = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
+                CreateBitmapMask(sprite_mask,RGB(255,255,255));
+
+
+                gerar2(&lab);
+
                 inicializar_rato(&rato);
                 rato.active = TRUE;
-                rato.speed = SPEED_HIGH;
+                rato.speed = SPEED_LOW;
 
                 inicializar_contador_de_frames(hwnd, &FPS_count);
+                UpdateWindow(hwnd);
             };
             break;
 
@@ -88,9 +99,9 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hwnd, &ps);
 
-            //deslab
-            desenhar_labirinto(hwnd,hdc,&lab,&rato,0,0);
-            //desenhar_rato(hwnd,hdc,&rato,0,0);
+
+            desenhar_labirinto(hwnd,hdc,&lab,&rato,map_tiles, sprite, sprite_mask, 0,0);
+
 
 
             EndPaint(hwnd, &ps);
@@ -104,7 +115,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             break;
         case WM_LBUTTONDOWN:
             {
-                system("cls");
+                rato.active ^= 1;
             }
         break;
 

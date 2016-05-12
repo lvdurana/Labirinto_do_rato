@@ -71,7 +71,6 @@ int atualizar_movimento_rato(character *rato){
     rato->frame_duration--;
     if(!(rato->frame_duration)){
         rato->frame ^= 1;
-        printf("//////%d\n",rato->frame);
         rato->frame_duration = FRAME_DURATION(rato->speed);
     }
 
@@ -103,37 +102,52 @@ int atualizar_IA_rato(labirinto *lab, character *rato){
 }
 
 int update(labirinto *lab, character *rato){
-    atualizar_movimento_rato(rato);
-    if(verificar_movimentacao(rato)){;
-
-        atualizar_IA_rato(lab,rato);
-    }
+    if(rato->active){
+        atualizar_movimento_rato(rato);
+        if(verificar_movimentacao(rato)){;
+            atualizar_IA_rato(lab,rato);
+        }
+    };
 
 }
 
 
-void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, int pos_x, int pos_y){
-
-    HWND map_tiles = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_TILES));
-    HWND sprite = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
+void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, HBITMAP map_tiles, HBITMAP sprite, HBITMAP sprite_mask, int pos_x, int pos_y){
 
 
+
+
+    HBITMAP hMemBitmap = CreateCompatibleBitmap(hdc, WINDOW_WIDTH, WINDOW_HEIGHT);
+    HDC tiles= CreateCompatibleDC(hdc);
+    SelectObject(tiles,map_tiles);
     HDC hdcMem = CreateCompatibleDC(hdc);
-    HBITMAP hbmOld = SelectObject(hdcMem, map_tiles);
+    SelectObject(hdcMem, hMemBitmap);
+
     int i,j;
 
-    //Desenhar labirinto
     for(i=0;i<MAX_SIZE_LAB_Y;i++){
         for(j=0;j<MAX_SIZE_LAB_X;j++){
-            BitBlt(hdc, pos_x+j*SIZE_CELL_X, pos_y+i*SIZE_CELL_Y, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, TILE_BITMAP_POSITION_X(lab->mat[i][j]), 0, SRCCOPY);
+            BitBlt(hdcMem, pos_x+j*SIZE_CELL_X, pos_y+i*SIZE_CELL_Y, SIZE_CELL_X, SIZE_CELL_Y, tiles, TILE_BITMAP_POSITION_X(lab->mat[i][j]), 0, SRCCOPY);
         };
     };
-    SelectObject(hdcMem, sprite);
-    BitBlt(hdc, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, (rato->frame * 16), (rato->direction*16), SRCCOPY);
+
+    SelectObject(tiles,sprite);
+    BitBlt(hdcMem, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, tiles, (rato->frame * 16), (rato->direction*16), SRCAND);
+
+    SelectObject(tiles,sprite_mask);
+    BitBlt(hdcMem, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, tiles, (rato->frame * 16), (rato->direction*16), SRCPAINT);
 
 
-    SelectObject(hdcMem, hbmOld);
 
+    BitBlt(hdc, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdcMem, 0, 0, SRCCOPY);
+
+
+
+    //SelectObject(hdcMem, hbmOld);
+
+    DeleteObject(hMemBitmap);
+
+    DeleteDC(tiles);
     DeleteDC(hdcMem);
 
 
@@ -141,27 +155,46 @@ void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, int
 
 };
 
-int desenhar_rato(HWND hwnd, HDC hdc,character *rato,int pos_x, int pos_y){
 
-    RECT rc;
+HBITMAP CreateBitmapMask(HBITMAP hbmColour, COLORREF crTransparent)
+{
+    HDC hdcMem, hdcMem2;
+    HBITMAP hbmMask;
+    BITMAP bm;
 
-    GetClientRect(hwnd,&rc);
+    // Create monochrome (1 bit) mask bitmap.
 
-    HWND mat_base = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
-    if(mat_base == NULL)
-        MessageBox(hwnd, "Could not load SM_BMP_MATRIZ!", "Error", MB_OK | MB_ICONEXCLAMATION);
+    GetObject(hbmColour, sizeof(BITMAP), &bm);
+    hbmMask = CreateBitmap(bm.bmWidth, bm.bmHeight, 1, 1, NULL);
 
-    HDC hdcMem = CreateCompatibleDC(hdc);
-    HBITMAP hbmOld = (HBITMAP)SelectObject(hdcMem, mat_base);
+    // Get some HDCs that are compatible with the display driver
 
-    //Desenhar labirinto
+    hdcMem = CreateCompatibleDC(0);
+    hdcMem2 = CreateCompatibleDC(0);
 
-    BitBlt(hdc, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, hdcMem, 0, 0, SRCPAINT);
+    SelectObject(hdcMem, hbmColour);
+    SelectObject(hdcMem2, hbmMask);
 
-    SelectObject(hdcMem, hbmOld);
+    // Set the background colour of the colour image to the colour
+    // you want to be transparent.
+    SetBkColor(hdcMem, crTransparent);
+
+    // Copy the bits from the colour image to the B+W mask... everything
+    // with the background colour ends up white while everythig else ends up
+    // black...Just what we wanted.
+
+    BitBlt(hdcMem2, 0, 0, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+
+    // Take our new mask and use it to turn the transparent colour in our
+    // original colour image to black so the transparency effect will
+    // work right.
+    BitBlt(hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, hdcMem2, 0, 0, SRCINVERT);
+
+    // Clean up.
+
     DeleteDC(hdcMem);
+    DeleteDC(hdcMem2);
 
-
+    return hbmMask;
 }
-
 

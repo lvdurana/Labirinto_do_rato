@@ -49,7 +49,7 @@
 
 #define FRAME_DURATION(x) (8/x)
 
-#define MAX_FPS 15
+#define MAX_FPS 30
 #define FPS_TIMER 0x0001
 
 
@@ -92,4 +92,5 @@ int pop(stack **pilha);
 int criar_dado_pilha();
 int atualizar_pilha(labirinto *lab, character *rato);
 void borda(labirinto *lab);
+
 

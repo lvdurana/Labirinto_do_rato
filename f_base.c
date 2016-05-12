@@ -94,6 +94,8 @@ void imprimir(){
 }
 
 
+
+
 void gerar(labirinto *lab){
     int tp0,c,d;
     borda(lab);
@@ -108,6 +110,129 @@ void gerar(labirinto *lab){
     }
 
 }
+
+gerar2(labirinto *lab){
+    int molde[11][4]={{2,2,2,2},{1,2,1,2},{2,1,2,1},{2,1,1,2},{1,1,2,2},{1,2,2,1},{2,2,1,1},{2,1,2,2},{2,2,1,1},{2,1,2,2},{1,2,2,2}};
+    int c,d,e,tp0;
+
+    srand(time(NULL));
+    for(c=0;c<TAM_X-1;c+=2)
+    for(d=0;d<TAM_Y-1;d+=2)
+    {
+        lab->mat[c][d] = TILE_WALL;
+        if (c+2 < TAM_X && d+2 < TAM_Y)
+        {
+
+            tp0 = rand() % 11;
+
+            if(mat[c+2][d+1] == 0)
+            {
+                mat[c+2][d+1] = molde[tp0][0];
+                printf("%d",mat[c+2][d+1]);
+            }
+
+            if(lab->mat[c+1][d] == 0)
+            {
+                lab->mat[c+1][d] = molde[tp0][1];
+            }
+            if(lab->mat[c][d+1] == 0)
+            {
+                lab->mat[c][d+1] = molde[tp0][2];
+            }
+            if(lab->mat[c+1][d+2] == 0)
+            {
+                lab->mat[c+1][d+2] = molde[tp0][3];
+            }
+
+        }
+    }
+//limpa os restos
+    for(c=1;c<TAM_X-1;c++)
+    for(d=1;d<TAM_Y-1;d++)
+    {
+        if (lab->mat[c][d] == 2)
+            lab->mat[c][d] = 0;
+
+
+    }
+//limpa os quadradinhos solitários e os buracos
+while (e)
+{
+    e = 0;
+    for(c=1;c<TAM_X-1;c++)
+    for(d=1;d<TAM_Y-1;d++)
+    {
+        if (lab->mat[c][d] == 0)
+        {
+            if (lab->mat[c-1][d] == 1 && lab->mat[c+1][d] == 1 && lab->mat[c][d-1] == 1 && lab->mat[c][d+1] == 1)
+            {
+                tp0 = rand() % 16;
+                if (tp0 == 0)
+                {
+                    lab->mat[c+1][d] = 0;
+                    e = 1;
+                }
+
+                if (tp0 == 1)
+                {
+                    lab->mat[c][d-1] = 0;
+                    e = 1;
+                }
+
+                if (tp0 == 2)
+                {
+                    lab->mat[c-1][d] = 0;
+                    e = 1;
+                }
+
+                if (tp0 == 3)
+                {
+                    lab->mat[c][d+1] = 0;
+                    e = 1;
+                }
+
+            }
+
+        }
+
+        if (lab->mat[c][d] == 1)
+        {
+            if (lab->mat[c-1][d] == 0 && lab->mat[c+1][d] == 0 && lab->mat[c][d-1] == 0 && lab->mat[c][d+1] == 0)
+            {
+                tp0 = rand() % 16;
+                if (tp0 == 0)
+                {
+                    lab->mat[c+1][d] = 1;
+                    e = 1;
+                }
+
+                if (tp0 == 1)
+                {
+                    lab->mat[c][d-1] = 1;
+                    e = 1;
+                }
+
+                if (tp0 == 2)
+                {
+                    lab->mat[c-1][d] = 1;
+                    e = 1;
+                }
+
+                if (tp0 == 3)
+                {
+                    lab->mat[c][d+1] = 1;
+                    e = 1;
+                }
+
+            }
+
+        }
+    }
+}
+
+    borda(lab);
+}
+
 
 void atualizar(){
     int c,d;
@@ -161,9 +286,14 @@ int atualizar_pilha(labirinto *lab, character *rato)
                     else
                     {
                         pop(&(rato->pilha));
+                        if(rato->pilha == NULL){
+                            printf("POP NULL");
+                            //FIM DO LAB
+                            return 0;
+                        };
+
 
                         int diff_pos = rato->pilha->dado - dado;
-                        printf("%d\n",diff_pos);
 
                         if(diff_pos == 100)
                             dir = DIRECTION_RIGHT;
