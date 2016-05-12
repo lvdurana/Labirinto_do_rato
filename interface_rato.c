@@ -84,7 +84,24 @@ int verificar_movimentacao(character *rato){
 }
 
 int atualizar_IA_rato(labirinto *lab, character *rato){
+
+    //Verificar se o rato saiu do labirinto
+    if(saiu(rato)){
+        rato->active = FALSE;
+        printf("\nSAIU");
+        return 1;
+    };
+
+    //Decidir próximo movimentp
     int dir = atualizar_pilha(lab,rato);
+
+    //Verificar se o rato voltou para o começo do labirinto
+    if(dir < 0){
+        rato->active = FALSE;
+        printf("\nSEM SAIDA");
+        return 1;
+    };
+
     rato->direction = dir;
     //printf("%d\n",rato->direction);
     switch(dir){
@@ -98,15 +115,19 @@ int atualizar_IA_rato(labirinto *lab, character *rato){
             break;
 
     }
+    return 0;
 
 }
 
 int update(labirinto *lab, character *rato){
     if(rato->active){
         atualizar_movimento_rato(rato);
-        if(verificar_movimentacao(rato)){;
+        if(verificar_movimentacao(rato)){
+
+
             atualizar_IA_rato(lab,rato);
         }
+        return 0;
     };
 
 }
@@ -117,7 +138,7 @@ void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, HBI
 
 
 
-    HBITMAP hMemBitmap = CreateCompatibleBitmap(hdc, WINDOW_WIDTH, WINDOW_HEIGHT);
+    HBITMAP hMemBitmap = CreateCompatibleBitmap(hdc, LAB_WIDTH, LAB_HEIGHT);
     HDC tiles= CreateCompatibleDC(hdc);
     SelectObject(tiles,map_tiles);
     HDC hdcMem = CreateCompatibleDC(hdc);
@@ -196,5 +217,63 @@ HBITMAP CreateBitmapMask(HBITMAP hbmColour, COLORREF crTransparent)
     DeleteDC(hdcMem2);
 
     return hbmMask;
+}
+
+void criar_botoes(HWND hwnd, HWND *buttons){
+    //Estabelecer posições origem
+    int x_pos = SPEED_BUTTONS_X;
+    int y_pos = SPEED_BUTTONS_Y;
+
+
+    buttons[PAUSE_BUTTON] = CreateWindow("BUTTON", "||",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        x_pos, y_pos, SPEED_BUTTONS_WIDTH, SPEED_BUTTONS_HEIGHT,
+        hwnd, NULL, GetModuleHandle(NULL), NULL);
+    x_pos += SPEED_BUTTONS_WIDTH + SPEED_BUTTONS_PADDING;
+
+    buttons[SPEED_LOW_BUTTON] = CreateWindow("BUTTON", "1",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        x_pos, y_pos, SPEED_BUTTONS_WIDTH, SPEED_BUTTONS_HEIGHT,
+        hwnd, NULL, GetModuleHandle(NULL), NULL);
+    x_pos += SPEED_BUTTONS_WIDTH + SPEED_BUTTONS_PADDING;
+
+    buttons[SPEED_MID_BUTTON] = CreateWindow("BUTTON", "2",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        x_pos, y_pos, SPEED_BUTTONS_WIDTH, SPEED_BUTTONS_HEIGHT,
+        hwnd, NULL, GetModuleHandle(NULL), NULL);
+    x_pos += SPEED_BUTTONS_WIDTH + SPEED_BUTTONS_PADDING;
+
+    buttons[SPEED_HIGH_BUTTON] = CreateWindow("BUTTON", "3",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        x_pos, y_pos, SPEED_BUTTONS_WIDTH, SPEED_BUTTONS_HEIGHT,
+        hwnd, NULL, GetModuleHandle(NULL), NULL);
+
+    buttons[OPTIONS_BUTTON] = CreateWindow("BUTTON", "Opções",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        OPTIONS_BUTTON_X, CONTROL_BUTTONS_Y, CONTROL_BUTTONS_WIDTH, CONTROL_BUTTONS_HEIGHT,
+        hwnd, NULL, GetModuleHandle(NULL), NULL);
+
+    buttons[RESET_BUTTON] = CreateWindow("BUTTON", "Resetar",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        RESET_BUTTON_X, CONTROL_BUTTONS_Y, CONTROL_BUTTONS_WIDTH, CONTROL_BUTTONS_HEIGHT,
+        hwnd, NULL, GetModuleHandle(NULL), NULL);
+
+
+};
+
+int verificar_botao_pressionado(HWND hwnd, HWND pressed, character *rato, HWND *buttons){
+
+    if(pressed == buttons[PAUSE_BUTTON]){
+        rato->active = FALSE;
+    }
+    if(pressed == buttons[SPEED_LOW_BUTTON]){
+        rato->active = TRUE;
+        rato->speed = SPEED_LOW;
+    }
+    if(pressed == buttons[SPEED_MID_BUTTON]){
+        rato->active = TRUE;
+        rato->speed = SPEED_MID;
+    }
+    if(pressed == buttons[SPEED_HIGH_BUTTON]){
+        rato->active = TRUE;
+        rato->speed = SPEED_HIGH;
+    }
+
+
+
 }
 

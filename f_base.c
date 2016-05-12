@@ -60,8 +60,11 @@ int criar_dado_pilha(){
     return (stack*)malloc(sizeof(stack));
 }
 
-int saiu()
+int saiu(character *rato)
 {
+    rato_x = GET_X_FROM_STACK(rato->pilha->dado);
+    rato_y = GET_Y_FROM_STACK(rato->pilha->dado);
+
     if (rato_x == 0 || rato_x == TAM_X-1 || rato_y == 0 || rato_y == TAM_Y-1)
         return 1;
     else
@@ -289,7 +292,7 @@ int atualizar_pilha(labirinto *lab, character *rato)
                         if(rato->pilha == NULL){
                             printf("POP NULL");
                             //FIM DO LAB
-                            return 0;
+                            return -1;
                         };
 
 
@@ -305,14 +308,17 @@ int atualizar_pilha(labirinto *lab, character *rato)
                             dir = DIRECTION_UP;
                         else
                             dir = DIRECTION_LEFT;
+
+                        lab->mat[rato_y][rato_x] = MAP_DEADEND;
+                        return dir;
                     }
             }
         }
     }
 
-    if(verificar_beco(lab,rato_x,rato_y))
+    /*if(verificar_beco(lab,rato_x,rato_y))
         lab->mat[rato_y][rato_x] = MAP_DEADEND;
-    else
+    else*/
         lab->mat[rato_y][rato_x] = MAP_VISITED;
     //printf("%d %d\n",GET_X_FROM_STACK(rato->pilha->dado),GET_Y_FROM_STACK(rato->pilha->dado));
     return dir;

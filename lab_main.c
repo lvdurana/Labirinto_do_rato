@@ -10,6 +10,7 @@ frame_count FPS_count;
 
 //Elementos da interface
 HBITMAP map_tiles, sprite, sprite_mask;
+HWND buttons[NUM_BUTTONS];
 
 
 
@@ -87,7 +88,9 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
                 inicializar_rato(&rato);
                 rato.active = TRUE;
-                rato.speed = SPEED_LOW;
+                rato.speed = SPEED_HIGH;
+
+                criar_botoes(hwnd, buttons);
 
                 inicializar_contador_de_frames(hwnd, &FPS_count);
                 UpdateWindow(hwnd);
@@ -102,25 +105,33 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
             desenhar_labirinto(hwnd,hdc,&lab,&rato,map_tiles, sprite, sprite_mask, 0,0);
 
-
-
             EndPaint(hwnd, &ps);
+
         }
         break;
         case WM_COMMAND:
             switch(LOWORD(wParam))
             {
+                case BN_CLICKED:
+                    if(1){
+                        verificar_botao_pressionado(hwnd,lParam,&rato,buttons);
+                        InvalidateRect(hwnd,NULL,1);
+                        UpdateWindow(hwnd);
+                    };
 
+                break;
             }
             break;
         case WM_LBUTTONDOWN:
             {
-                rato.active ^= 1;
+
+                //rato.active ^= 1;
             }
         break;
 
         case WM_TIMER:
             switch(wParam){
+
                 case FPS_TIMER:
                     update(&lab,&rato);
                     InvalidateRect(hwnd,NULL,1);
