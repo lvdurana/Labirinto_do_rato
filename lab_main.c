@@ -84,11 +84,11 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 CreateBitmapMask(sprite_mask,RGB(255,255,255));
 
 
-                gerar2(&lab);
+                //gerar2(&lab);
 
-                inicializar_rato(&rato);
-                rato.active = TRUE;
-                rato.speed = SPEED_HIGH;
+                inicializar_labirinto(&lab,&rato,TRUE);
+                //rato.active = TRUE;
+                //rato.speed = SPEED_HIGH;
 
                 criar_botoes(hwnd, buttons);
 
@@ -114,7 +114,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             {
                 case BN_CLICKED:
                     if(1){
-                        verificar_botao_pressionado(hwnd,lParam,&rato,buttons);
+                        verificar_botao_pressionado(hwnd,lParam,&lab,&rato,buttons);
                         InvalidateRect(hwnd,NULL,1);
                         UpdateWindow(hwnd);
                     };

@@ -22,8 +22,8 @@ int atualizar_frame(HWND hwnd, frame_count *frame){
 }
 
 int inicializar_rato(character *rato){
-    rato->pos.x = 16;
-    rato->pos.y = 16;
+    rato->pos.x = INITIAL_POSITION_X*SIZE_CELL_X;
+    rato->pos.y = INITIAL_POSITION_Y*SIZE_CELL_Y;
     rato->pos_map.x = 0;
     rato->pos_map.y = 0;
     rato->movement = 0;
@@ -31,14 +31,19 @@ int inicializar_rato(character *rato){
     rato->frame = 0;
     rato->frame_duration = FRAME_DURATION(SPEED_LOW);
     rato->pilha = criar_dado_pilha();
-    rato->pilha->dado = 101;
+    rato->pilha->dado = INITIAL_POSITION;
     rato->pilha->prox = NULL;
     rato->active = FALSE;
 
 }
 
-int inicializar_labirinto(labirinto *lab, character *rato){
-    gerar(lab);
+int inicializar_labirinto(labirinto *lab, character *rato, int mode){
+
+    inicializar_rato(rato);
+    if(mode)
+        gerar(lab);
+    else
+        gerar2(lab);
 
 }
 
@@ -255,7 +260,7 @@ void criar_botoes(HWND hwnd, HWND *buttons){
 
 };
 
-int verificar_botao_pressionado(HWND hwnd, HWND pressed, character *rato, HWND *buttons){
+int verificar_botao_pressionado(HWND hwnd, HWND pressed, labirinto *lab, character *rato, HWND *buttons){
 
     if(pressed == buttons[PAUSE_BUTTON]){
         rato->active = FALSE;
@@ -271,6 +276,9 @@ int verificar_botao_pressionado(HWND hwnd, HWND pressed, character *rato, HWND *
     if(pressed == buttons[SPEED_HIGH_BUTTON]){
         rato->active = TRUE;
         rato->speed = SPEED_HIGH;
+    }
+    if(pressed == buttons[RESET_BUTTON]){
+        inicializar_labirinto(lab,rato,TRUE);
     }
 
 
