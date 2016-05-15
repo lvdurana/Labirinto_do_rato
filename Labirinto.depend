@@ -2,10 +2,10 @@
 1463081470 source:c:\users\levi\documents\projects\c\labirinto_do_rato\lab_main.c
 	"f_base.h"
 
-1463115507 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\lab_main.c
+1463262675 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\lab_main.c
 	"f_base.h"
 
-1463115002 c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\f_base.h
+1463262468 c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\f_base.h
 	<tchar.h>
 	<windows.h>
 	<stdio.h>
@@ -13,15 +13,15 @@
 	<time.h>
 	"resource.h"
 
-1462830274 c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\resource.h
+1463261470 c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\resource.h
 
 1463092404 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\f_base.c
 	"f_base.h"
 
-1463115302 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\interface_rato.c
+1463262607 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\interface_rato.c
 	"f_base.h"
 
-1462833092 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\resource.rc
+1463261485 source:c:\users\usuario\documents\projects\c\labirinto\labirinto_do_rato\resource.rc
 	<windows.h>
 	<commctrl.h>
 	<richedit.h>

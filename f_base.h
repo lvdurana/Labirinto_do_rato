@@ -26,6 +26,14 @@
 #define WINDOW_WIDTH ((MAX_SIZE_LAB_X * SIZE_CELL_X) + WINDOW_PADDING_X)
 #define WINDOW_HEIGHT ((MAX_SIZE_LAB_Y * SIZE_CELL_Y) + WINDOW_PADDING_Y) + 64
 
+//Sprites
+#define SPRITE_TILES 0
+#define SPRITE_RATO 1
+#define SPRITE_RATO_MASK 2
+#define SPRITE_RATO_P 3
+#define SPRITE_RATO_P_MASK 4
+#define SPRITE_LEGENDA 5
+#define NUM_BITMAPS 6
 
 //Botões
 #define NUM_BUTTONS 6
@@ -82,8 +90,8 @@
 #define SPEED_HIGH 4
 #define SPEED_MAX 16
 
-#define INITIAL_POSITION_X 2
-#define INITIAL_POSITION_Y 2
+#define INITIAL_POSITION_X 1
+#define INITIAL_POSITION_Y 1
 #define INITIAL_POSITION (INITIAL_POSITION_X*100 + INITIAL_POSITION_Y)
 
 #define GET_X_FROM_STACK(x) (x/100)
@@ -124,7 +132,8 @@ typedef struct cha{
     int frame; // frame da animação do sprite
     int frame_duration; //numero de frames restantes até a alteração do frame
     stack *pilha;
-    BOOL active;
+    BOOL active; // Se o rato deve se mover
+    BOOL animation; //Se o rato deve executar a animação. Se estiver parado, o sprite de parado é utilizado
 
 } character;
 

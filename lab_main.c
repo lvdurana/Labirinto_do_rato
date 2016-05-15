@@ -9,7 +9,8 @@ character rato;
 frame_count FPS_count;
 
 //Elementos da interface
-HBITMAP map_tiles, sprite, sprite_mask;
+HBITMAP bitmaps[NUM_BITMAPS];
+//HBITMAP map_tiles, sprite, sprite_mask;
 HWND buttons[NUM_BUTTONS];
 
 
@@ -78,15 +79,19 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     {
         case WM_CREATE:
             {
-                map_tiles= LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_TILES));
-                sprite = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
-                sprite_mask = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
-                CreateBitmapMask(sprite_mask,RGB(255,255,255));
+                bitmaps[SPRITE_TILES] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_TILES));
+                bitmaps[SPRITE_RATO] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
+                bitmaps[SPRITE_RATO_MASK] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO));
+                bitmaps[SPRITE_RATO_P] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO_PARADO));
+                bitmaps[SPRITE_RATO_P_MASK] = LoadBitmap(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_BMP_RATO_PARADO));
+
+                CreateBitmapMask(bitmaps[SPRITE_RATO_MASK],RGB(255,255,255));
+                CreateBitmapMask(bitmaps[SPRITE_RATO_P_MASK],RGB(255,255,255));
 
 
                 //gerar2(&lab);
 
-                inicializar_labirinto(&lab,&rato,TRUE);
+                inicializar_labirinto(&lab,&rato,FALSE);
                 //rato.active = TRUE;
                 //rato.speed = SPEED_HIGH;
 
@@ -103,7 +108,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             HDC hdc = BeginPaint(hwnd, &ps);
 
 
-            desenhar_labirinto(hwnd,hdc,&lab,&rato,map_tiles, sprite, sprite_mask, 0,0);
+            desenhar_labirinto(hwnd,hdc,&lab,&rato, &bitmaps , 0,0);
 
             EndPaint(hwnd, &ps);
 

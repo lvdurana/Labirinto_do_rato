@@ -14,3 +14,5 @@ LR_BMP_TILES BITMAP "Tiles.bmp"
 
 LR_BMP_RATO BITMAP "Rato.bmp"
 
+LR_BMP_RATO_PARADO BITMAP "Rato_parado.bmp"
+

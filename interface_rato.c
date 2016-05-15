@@ -27,6 +27,7 @@ int inicializar_rato(character *rato){
     rato->pos_map.x = 0;
     rato->pos_map.y = 0;
     rato->movement = 0;
+    rato->direction = DIRECTION_DOWN;
     rato->speed = SPEED_LOW;
     rato->frame = 0;
     rato->frame_duration = FRAME_DURATION(SPEED_LOW);
@@ -34,6 +35,7 @@ int inicializar_rato(character *rato){
     rato->pilha->dado = INITIAL_POSITION;
     rato->pilha->prox = NULL;
     rato->active = FALSE;
+    rato->animation = TRUE;
 
 }
 
@@ -51,7 +53,7 @@ int atualizar_movimento_rato(character *rato){
 
     int move;
     //Executar movimentação
-    if(rato->movement){
+    if(rato->movement && rato->active){
         move = (rato->speed > rato->movement) ? rato->movement : rato->speed;
         switch(rato->direction){
         case DIRECTION_UP:
@@ -73,11 +75,13 @@ int atualizar_movimento_rato(character *rato){
     }
 
     //Atualizar frame
-    rato->frame_duration--;
-    if(!(rato->frame_duration)){
-        rato->frame ^= 1;
-        rato->frame_duration = FRAME_DURATION(rato->speed);
-    }
+    if(rato->active || rato->animation){
+        rato->frame_duration--;
+        if(!(rato->frame_duration)){
+            rato->frame ^= 1;
+            rato->frame_duration = FRAME_DURATION(rato->speed);
+        }
+    };
 
 }
 
@@ -125,7 +129,6 @@ int atualizar_IA_rato(labirinto *lab, character *rato){
 }
 
 int update(labirinto *lab, character *rato){
-    if(rato->active){
         atualizar_movimento_rato(rato);
         if(verificar_movimentacao(rato)){
 
@@ -133,19 +136,19 @@ int update(labirinto *lab, character *rato){
             atualizar_IA_rato(lab,rato);
         }
         return 0;
-    };
+    ;
 
 }
 
 
-void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, HBITMAP map_tiles, HBITMAP sprite, HBITMAP sprite_mask, int pos_x, int pos_y){
+void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, HBITMAP *bitmaps, int pos_x, int pos_y){
 
 
 
 
     HBITMAP hMemBitmap = CreateCompatibleBitmap(hdc, LAB_WIDTH, LAB_HEIGHT);
     HDC tiles= CreateCompatibleDC(hdc);
-    SelectObject(tiles,map_tiles);
+    SelectObject(tiles,bitmaps[SPRITE_TILES]);
     HDC hdcMem = CreateCompatibleDC(hdc);
     SelectObject(hdcMem, hMemBitmap);
 
@@ -157,13 +160,21 @@ void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, HBI
         };
     };
 
-    SelectObject(tiles,sprite);
-    BitBlt(hdcMem, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, tiles, (rato->frame * 16), (rato->direction*16), SRCAND);
+    if(rato->animation){
+        SelectObject(tiles,bitmaps[SPRITE_RATO_P]);
+        BitBlt(hdcMem, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, tiles, (rato->frame * 16), 0, SRCAND);
 
-    SelectObject(tiles,sprite_mask);
-    BitBlt(hdcMem, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, tiles, (rato->frame * 16), (rato->direction*16), SRCPAINT);
+        SelectObject(tiles,bitmaps[SPRITE_RATO_P_MASK]);
+        BitBlt(hdcMem, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, tiles, (rato->frame * 16), 0, SRCPAINT);
+    }
+    else{
+        SelectObject(tiles,bitmaps[SPRITE_RATO]);
+        BitBlt(hdcMem, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, tiles, (rato->frame * 16), (rato->direction*16), SRCAND);
 
+        SelectObject(tiles,bitmaps[SPRITE_RATO_MASK]);
+        BitBlt(hdcMem, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, tiles, (rato->frame * 16), (rato->direction*16), SRCPAINT);
 
+    };
 
     BitBlt(hdc, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdcMem, 0, 0, SRCCOPY);
 
@@ -267,15 +278,18 @@ int verificar_botao_pressionado(HWND hwnd, HWND pressed, labirinto *lab, charact
     }
     if(pressed == buttons[SPEED_LOW_BUTTON]){
         rato->active = TRUE;
+        rato->animation = FALSE;
         rato->speed = SPEED_LOW;
     }
     if(pressed == buttons[SPEED_MID_BUTTON]){
         rato->active = TRUE;
         rato->speed = SPEED_MID;
+        rato->animation = FALSE;
     }
     if(pressed == buttons[SPEED_HIGH_BUTTON]){
         rato->active = TRUE;
         rato->speed = SPEED_HIGH;
+        rato->animation = FALSE;
     }
     if(pressed == buttons[RESET_BUTTON]){
         inicializar_labirinto(lab,rato,TRUE);

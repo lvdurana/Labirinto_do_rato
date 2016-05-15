@@ -1,3 +1,4 @@
 #define LR_BMP_TILES 9001
 #define LR_BMP_RATO 9002
+#define LR_BMP_RATO_PARADO 9003
 
