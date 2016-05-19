@@ -10,12 +10,7 @@ frame_count FPS_count;
 
 //Elementos da interface
 HBITMAP bitmaps[NUM_BITMAPS];
-//HBITMAP map_tiles, sprite, sprite_mask;
 HWND buttons[NUM_BUTTONS];
-
-
-
-LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 
 int WINAPI WinMain (HINSTANCE hThisInstance,

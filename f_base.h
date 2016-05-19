@@ -141,7 +141,25 @@ typedef struct cha{
 void push(stack **pilha, int dado);
 int pop(stack **pilha);
 int criar_dado_pilha();
+int saiu(character *rato);
+void gerar(labirinto *lab);
+void gerar2(labirinto *lab);
 int atualizar_pilha(labirinto *lab, character *rato);
+int verificar_beco(labirinto *lab, int pos_x, int pos_y);
 void borda(labirinto *lab);
 
+int inicializar_contador_de_frames(HWND hwnd, frame_count *frame);
+int atualizar_frame(HWND hwnd, frame_count *frame);
+int inicializar_rato(character *rato);
+int inicializar_labirinto(labirinto *lab, character *rato, int mode);
+int atualizar_movimento_rato(character *rato);
+int verificar_movimentacao(character *rato);
+int atualizar_IA_rato(labirinto *lab, character *rato);
+int update(labirinto *lab, character *rato);
+void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, HBITMAP *bitmaps, int pos_x, int pos_y);
+HBITMAP CreateBitmapMask(HBITMAP hbmColour, COLORREF crTransparent);
+void criar_botoes(HWND hwnd, HWND *buttons);
+int verificar_botao_pressionado(HWND hwnd, HWND pressed, labirinto *lab, character *rato, HWND *buttons);
+
+LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
