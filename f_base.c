@@ -25,6 +25,20 @@ int criar_dado_pilha(){
     return (stack*)malloc(sizeof(stack));
 }
 
+void liberar_lista(stack **list){
+
+    stack *aux = *list;
+    stack *aux2;
+
+    while(aux != NULL){
+        aux2 = aux;
+        aux = aux->prox;
+        free(aux2);
+    }
+
+
+}
+
 int saiu(character *rato)
 {
     int rato_x = GET_X_FROM_STACK(rato->pilha->dado);

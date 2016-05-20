@@ -63,6 +63,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
         DispatchMessage(&messages);
     }
 
+    liberar_lista(&(rato.pilha));
+
 };
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)

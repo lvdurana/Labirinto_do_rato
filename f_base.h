@@ -36,14 +36,15 @@
 #define NUM_BITMAPS 6
 
 //Botões
-#define NUM_BUTTONS 6
+#define NUM_BUTTONS 7
 
 #define PAUSE_BUTTON 0
 #define SPEED_LOW_BUTTON 1
 #define SPEED_MID_BUTTON 2
 #define SPEED_HIGH_BUTTON 3
-#define OPTIONS_BUTTON 4
-#define RESET_BUTTON 5
+#define SPEED_MAX_BUTTON 4
+#define OPTIONS_BUTTON 5
+#define RESET_BUTTON 6
 
 
 #define SPEED_BUTTONS_WIDTH 48
@@ -146,6 +147,7 @@ typedef struct cha{
 void push(stack **pilha, int dado);
 int pop(stack **pilha);
 int criar_dado_pilha();
+void liberar_lista(stack **list);
 int saiu(character *rato);
 void gerar(labirinto *lab);
 void gerar2(labirinto *lab);

@@ -22,6 +22,9 @@ int atualizar_frame(HWND hwnd, frame_count *frame){
 }
 
 int inicializar_rato(character *rato){
+
+    liberar_lista(&(rato->pilha));
+
     rato->pos.x = INITIAL_POSITION_X*SIZE_CELL_X;
     rato->pos.y = INITIAL_POSITION_Y*SIZE_CELL_Y;
     rato->pos_map.x = 0;
@@ -283,6 +286,11 @@ void criar_botoes(HWND hwnd, HWND *buttons){
     buttons[SPEED_HIGH_BUTTON] = CreateWindow("BUTTON", "3",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         x_pos, y_pos, SPEED_BUTTONS_WIDTH, SPEED_BUTTONS_HEIGHT,
         hwnd, NULL, GetModuleHandle(NULL), NULL);
+    x_pos += SPEED_BUTTONS_WIDTH + SPEED_BUTTONS_PADDING;
+
+    buttons[SPEED_MAX_BUTTON] = CreateWindow("BUTTON", "MAX",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
+        x_pos, y_pos, SPEED_BUTTONS_WIDTH, SPEED_BUTTONS_HEIGHT,
+        hwnd, NULL, GetModuleHandle(NULL), NULL);
 
     buttons[OPTIONS_BUTTON] = CreateWindow("BUTTON", "Opções",WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
         OPTIONS_BUTTON_X, CONTROL_BUTTONS_Y, CONTROL_BUTTONS_WIDTH, CONTROL_BUTTONS_HEIGHT,
@@ -315,6 +323,11 @@ int verificar_botao_pressionado(HWND hwnd, HWND pressed, labirinto *lab, charact
         rato->speed = SPEED_HIGH;
         rato->animation = FALSE;
     }
+    if(pressed == buttons[SPEED_MAX_BUTTON]){
+        rato->active = TRUE;
+        rato->speed = SPEED_MAX;
+        rato->animation = FALSE;
+    }
     if(pressed == buttons[RESET_BUTTON]){
         inicializar_labirinto(lab,rato,FALSE);
     }
@@ -329,6 +342,7 @@ atualizar_botoes_permitidos(HWND *buttons, labirinto *lab, character *rato){
     BOOL s1_allowed = TRUE;
     BOOL s2_allowed = TRUE;
     BOOL s3_allowed = TRUE;
+    BOOL s4_allowed = TRUE;
 
     if(lab->status == STATUS_ACTIVE){
         if(rato->active)
@@ -342,6 +356,9 @@ atualizar_botoes_permitidos(HWND *buttons, labirinto *lab, character *rato){
                 case SPEED_HIGH:
                     s3_allowed = FALSE;
                 break;
+                case SPEED_MAX:
+                    s4_allowed = FALSE;
+                break;
             }
         else
             pause_allowed = FALSE;
@@ -351,6 +368,7 @@ atualizar_botoes_permitidos(HWND *buttons, labirinto *lab, character *rato){
         s1_allowed = FALSE;
         s2_allowed = FALSE;
         s3_allowed = FALSE;
+        s4_allowed = FALSE;
 
     }
 
@@ -358,6 +376,7 @@ atualizar_botoes_permitidos(HWND *buttons, labirinto *lab, character *rato){
     EnableWindow(buttons[SPEED_LOW_BUTTON],s1_allowed);
     EnableWindow(buttons[SPEED_MID_BUTTON],s2_allowed);
     EnableWindow(buttons[SPEED_HIGH_BUTTON],s3_allowed);
+    EnableWindow(buttons[SPEED_MAX_BUTTON],s4_allowed);
 
 }
 
