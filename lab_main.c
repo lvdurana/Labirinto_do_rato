@@ -27,7 +27,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     wincl.lpfnWndProc = WindowProcedure;
     wincl.style = CS_DBLCLKS;
     wincl.cbSize = sizeof (WNDCLASSEX);
-    wincl.hIcon = LoadIcon (NULL, IDI_APPLICATION);
+    wincl.hIcon = LoadIcon (MAKEINTRESOURCE(LR_ICON), IDI_APPLICATION);
     wincl.hIconSm = (HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_ICON), IMAGE_ICON, 16, 16, 0);
     wincl.hCursor = LoadCursor (NULL, IDC_ARROW);
     wincl.lpszMenuName = NULL;//MAKEINTRESOURCE(IDR_MYMENU);
