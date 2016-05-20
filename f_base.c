@@ -56,6 +56,11 @@ void gerar2(labirinto *lab){
     int molde[11][4]={{2,2,2,2},{1,2,1,2},{2,1,2,1},{2,1,1,2},{1,1,2,2},{1,2,2,1},{2,2,1,1},{2,1,2,2},{2,2,1,1},{2,1,2,2},{1,2,2,2}};
     int c,d,e,tp0;
 
+    //Zerar matrix
+    for(c=0;c<MAX_SIZE_LAB_X;c++)
+        for(d=0;d<MAX_SIZE_LAB_X;d++)
+            lab->mat[c][d] = 0;
+
     srand(time(NULL));
     for(c=0;c<MAX_SIZE_LAB_X-1;c+=2)
     for(d=0;d<MAX_SIZE_LAB_Y-1;d+=2)
@@ -211,6 +216,7 @@ int atualizar_pilha(labirinto *lab, character *rato)
                     else
                     {
                         pop(&(rato->pilha));
+
                         if(rato->pilha == NULL){
                             printf("POP NULL");
                             //FIM DO LAB
@@ -232,16 +238,17 @@ int atualizar_pilha(labirinto *lab, character *rato)
                             dir = DIRECTION_LEFT;
 
                         lab->mat[rato_y][rato_x] = MAP_DEADEND;
+                        if(verificar_beco(lab,rato_x,rato_y))
+                            PlaySound("rat3.wav",NULL, SND_FILENAME|SND_ASYNC|SND_NOSTOP);
                         return dir;
                     }
             }
         }
     }
 
-    /*if(verificar_beco(lab,rato_x,rato_y))
-        lab->mat[rato_y][rato_x] = MAP_DEADEND;
-    else*/
-        lab->mat[rato_y][rato_x] = MAP_VISITED;
+
+
+    lab->mat[rato_y][rato_x] = MAP_VISITED;
     return dir;
 }
 

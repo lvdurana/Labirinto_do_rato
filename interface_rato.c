@@ -42,6 +42,7 @@ int inicializar_rato(character *rato){
 int inicializar_labirinto(labirinto *lab, character *rato, int mode){
 
     inicializar_rato(rato);
+    lab->status = STATUS_ACTIVE;
     if(mode)
         gerar(lab);
     else
@@ -97,6 +98,7 @@ int atualizar_IA_rato(labirinto *lab, character *rato){
     //Verificar se o rato saiu do labirinto
     if(saiu(rato)){
         rato->active = FALSE;
+        lab->status = STATUS_EXIT;
         printf("\nSAIU");
         return 1;
     };
@@ -107,7 +109,9 @@ int atualizar_IA_rato(labirinto *lab, character *rato){
     //Verificar se o rato voltou para o começo do labirinto
     if(dir < 0){
         rato->active = FALSE;
+        lab->status = STATUS_NOEXIT;
         printf("\nSEM SAIDA");
+
         return 1;
     };
 
@@ -172,6 +176,11 @@ void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, HBI
         BitBlt(hdcMem, pos_x+rato->pos.x, pos_y+rato->pos.y, SIZE_CELL_X, SIZE_CELL_Y, tiles, (rato->frame * 16), (rato->direction*16), SRCPAINT);
 
     };
+    if(lab->status == STATUS_EXIT)
+        desenhar_texto(hdcMem,"Saída",22,200,200,100,0);
+    else
+    if(lab->status == STATUS_NOEXIT)
+    desenhar_texto(hdcMem,"Sem Saída",22,200,200,100,0);
 
     BitBlt(hdc, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, hdcMem, 0, 0, SRCCOPY);
 
@@ -212,6 +221,42 @@ HBITMAP CreateBitmapMask(HBITMAP hbmColour, COLORREF crTransparent)
     DeleteDC(hdcMem2);
 
     return hbmMask;
+}
+
+void desenhar_texto(HDC hdc, char *text, int size, int pos_x, int pos_y, int limit_x, int modifier){
+    RECT rect;
+
+    rect.top = pos_y;
+    rect.left = pos_x;
+    rect.right = pos_x+limit_x;
+    rect.bottom = pos_y+size;
+
+    HFONT font_old;
+    HFONT font = CreateFont(
+     size, //    nHeight,
+     0, //     nWidth,
+     0, //     nEscapement,
+     0, //_In_ int     nOrientation,
+     400, //_In_ int     fnWeight,
+     0, //  fdwItalic,
+     0, //   fdwUnderline,
+     0, //   fdwStrikeOut,
+     ANSI_CHARSET, //   fdwCharSet,
+     OUT_DEFAULT_PRECIS, //   fdwOutputPrecision,
+     CLIP_DEFAULT_PRECIS, //   fdwClipPrecision,
+     DEFAULT_QUALITY, //   fdwQuality,
+     DEFAULT_PITCH | FF_DONTCARE, //   fdwPitchAndFamily,
+     NULL // lpszFace
+    );
+
+
+    font_old = SelectObject(hdc,font);
+
+    SetBkMode(hdc, TRANSPARENT);
+    SetTextColor(hdc,RGB(255,255,255));
+    DrawText(hdc, text, -1, &rect, modifier);
+    SelectObject(hdc,font_old);
+    DeleteObject(font);
 }
 
 void criar_botoes(HWND hwnd, HWND *buttons){
@@ -271,10 +316,48 @@ int verificar_botao_pressionado(HWND hwnd, HWND pressed, labirinto *lab, charact
         rato->animation = FALSE;
     }
     if(pressed == buttons[RESET_BUTTON]){
-        inicializar_labirinto(lab,rato,TRUE);
+        inicializar_labirinto(lab,rato,FALSE);
     }
 
+    //atualizar_botoes_permitidos(buttons,lab,rato);
 
+}
+
+atualizar_botoes_permitidos(HWND *buttons, labirinto *lab, character *rato){
+
+    BOOL pause_allowed = TRUE;
+    BOOL s1_allowed = TRUE;
+    BOOL s2_allowed = TRUE;
+    BOOL s3_allowed = TRUE;
+
+    if(lab->status == STATUS_ACTIVE){
+        if(rato->active)
+            switch(rato->speed){
+                case SPEED_LOW:
+                    s1_allowed = FALSE;
+                break;
+                case SPEED_MID:
+                    s2_allowed = FALSE;
+                break;
+                case SPEED_HIGH:
+                    s3_allowed = FALSE;
+                break;
+            }
+        else
+            pause_allowed = FALSE;
+    }
+    else{
+        pause_allowed = FALSE;
+        s1_allowed = FALSE;
+        s2_allowed = FALSE;
+        s3_allowed = FALSE;
+
+    }
+
+    EnableWindow(buttons[PAUSE_BUTTON],pause_allowed);
+    EnableWindow(buttons[SPEED_LOW_BUTTON],s1_allowed);
+    EnableWindow(buttons[SPEED_MID_BUTTON],s2_allowed);
+    EnableWindow(buttons[SPEED_HIGH_BUTTON],s3_allowed);
 
 }
 

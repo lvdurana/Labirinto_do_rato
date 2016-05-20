@@ -24,7 +24,7 @@
 #define WINDOW_PADDING_Y 28
 
 #define WINDOW_WIDTH ((MAX_SIZE_LAB_X * SIZE_CELL_X) + WINDOW_PADDING_X)
-#define WINDOW_HEIGHT ((MAX_SIZE_LAB_Y * SIZE_CELL_Y) + WINDOW_PADDING_Y) + 64
+#define WINDOW_HEIGHT ((MAX_SIZE_LAB_Y * SIZE_CELL_Y) + WINDOW_PADDING_Y) + 36
 
 //Sprites
 #define SPRITE_TILES 0
@@ -94,6 +94,10 @@
 #define INITIAL_POSITION_Y 1
 #define INITIAL_POSITION (INITIAL_POSITION_X*100 + INITIAL_POSITION_Y)
 
+#define STATUS_ACTIVE 0
+#define STATUS_EXIT 1
+#define STATUS_NOEXIT 2
+
 #define GET_X_FROM_STACK(x) (x/100)
 #define GET_Y_FROM_STACK(x) (x%100)
 
@@ -112,6 +116,7 @@ typedef struct STACK
 
 typedef struct lab {
     int mat[MAX_SIZE_LAB_Y][MAX_SIZE_LAB_X];
+    int status;
 
 
 } labirinto;
@@ -158,6 +163,7 @@ int atualizar_IA_rato(labirinto *lab, character *rato);
 int update(labirinto *lab, character *rato);
 void desenhar_labirinto(HWND hwnd, HDC hdc, labirinto *lab, character *rato, HBITMAP *bitmaps, int pos_x, int pos_y);
 HBITMAP CreateBitmapMask(HBITMAP hbmColour, COLORREF crTransparent);
+void desenhar_texto(HDC hdc, char *text, int size, int pos_x, int pos_y, int limit_x, int modifier);
 void criar_botoes(HWND hwnd, HWND *buttons);
 int verificar_botao_pressionado(HWND hwnd, HWND pressed, labirinto *lab, character *rato, HWND *buttons);
 

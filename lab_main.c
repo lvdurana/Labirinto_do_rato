@@ -28,7 +28,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     wincl.style = CS_DBLCLKS;
     wincl.cbSize = sizeof (WNDCLASSEX);
     wincl.hIcon = LoadIcon (NULL, IDI_APPLICATION);
-    wincl.hIconSm = NULL;//(HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MYICON), IMAGE_ICON, 16, 16, 0);
+    wincl.hIconSm = (HICON)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(LR_ICON), IMAGE_ICON, 16, 16, 0);
     wincl.hCursor = LoadCursor (NULL, IDC_ARROW);
     wincl.lpszMenuName = NULL;//MAKEINTRESOURCE(IDR_MYMENU);
     wincl.cbClsExtra = 0;
@@ -84,11 +84,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 CreateBitmapMask(bitmaps[SPRITE_RATO_P_MASK],RGB(255,255,255));
 
 
-                //gerar2(&lab);
-
                 inicializar_labirinto(&lab,&rato,FALSE);
-                //rato.active = TRUE;
-                //rato.speed = SPEED_HIGH;
 
                 criar_botoes(hwnd, buttons);
 
@@ -134,6 +130,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
                 case FPS_TIMER:
                     update(&lab,&rato);
+                    atualizar_botoes_permitidos(buttons,&lab,&rato);
                     InvalidateRect(hwnd,NULL,1);
                     UpdateWindow(hwnd);
                     atualizar_frame(hwnd, &FPS_count);
